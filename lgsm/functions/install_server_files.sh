@@ -55,6 +55,8 @@ fn_install_server_files(){
 		remote_fileurl="http://linuxgsm.download/UnrealTournament3/UT3-linux-server-2.1.tar.xz"; local_filedir="${tmpdir}"; local_filename="UT3-linux-server-2.1.tar.xz"; chmodx="nochmodx" run="norun"; force="noforce"; md5="8876cca61e3f83ea08db25208bde6ac6"
 	elif [ "${shortname}" == "vs" ]; then
 		remote_fileurl="http://linuxgsm.download/VampireSlayer/vs_l-6.0_full.tar.xz"; local_filedir="${tmpdir}"; local_filename="vs_l-6.0_full.tar.xz"; chmodx="nochmodx" run="norun"; force="noforce"; md5="b322f79e0abd31847493c52acf802667"
+	elif [ "${shortname}" == "vu" ]; then
+		remote_fileurl="https://veniceunleashed.net/files/vu.zip"; local_filedir="${tmpdir}"; local_filename="vu.zip"; chmodx="nochmodx" run="norun"; force="noforce"; md5=""
 	elif [ "${shortname}" == "wet" ]; then
 		remote_fileurl="http://linuxgsm.download/WolfensteinEnemyTerritory/enemy-territory.260b.tar.xz"; local_filedir="${tmpdir}"; local_filename="enemy-territory.260b.tar.xz"; chmodx="nochmodx" run="norun"; force="noforce"; md5="581a333cc7eacda2f56d5a00fe11eafa"
 	elif [ "${shortname}" == "samp" ]; then

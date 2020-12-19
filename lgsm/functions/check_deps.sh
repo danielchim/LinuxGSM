@@ -6,6 +6,71 @@
 
 functionselfname="$(basename "$(readlink -f "${BASH_SOURCE[0]}")")"
 
+fn_install_wine(){
+	if["${winestatus}" != "0"];then
+		fn_print_dots "Installing wine"
+		if [ "${distroid}" == "ubuntu" ]; then
+				cmd="sudo dpkg --add-architecture i386"
+				eval "${cmd}"
+				if [ "${distroversion}" == "18.04" ]; then
+					cmd="wget -nc https://download.opensuse.org/repositories/Emulators:/Wine:/Debian/Debian_10/Release.key;sudo apt-key add Release.key;sudo apt-add-repository 'deb https://download.opensuse.org/repositories/Emulators:/Wine:/Debian/xUbuntu_18.04/ ./';sudo apt update"
+					eval "${cmd}"
+				#TODO: ADD SUPPORT FOR UBUNTU 16.04 > OR FEDORA DISTROS
+				elif [ "${distroversion}" == "16.04" ]; then
+					cmd="sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF;sudo apt-get install apt-transport-https;echo 'deb https://download.mono-project.com/repo/ubuntu stable-xenial main' | sudo tee /etc/apt/sources.list.d/mono-official-stable.list;sudo apt-get update"
+					eval "${cmd}"
+				elif [ "${distroversion}" == "14.04" ]; then
+					cmd="sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF;sudo apt-get install apt-transport-https;echo 'deb https://download.mono-project.com/repo/ubuntu stable-trusty main' | sudo tee /etc/apt/sources.list.d/mono-official-stable.list;sudo apt-get update"
+					eval "${cmd}"
+				else
+					fn_print_warn_nl "Installing Mono repository."
+					echo -e "Mono auto install not available for ${distroname}"
+					echo -e "	Follow instructions on mono site to install the latest version of Mono."
+					echo -e "	https://www.mono-project.com/download/stable/#download-lin"
+					monoautoinstall="1"
+				fi
+			elif [ "${distroid}" == "debian" ]; then
+				if [ "${distroversion}" == "10" ]; then
+					cmd="sudo apt-get install apt-transport-https dirmngr;sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF;echo 'deb https://download.mono-project.com/repo/debian stable-buster main' | sudo tee /etc/apt/sources.list.d/mono-official-stable.list;sudo apt-get update"
+					eval "${cmd}"
+				elif [ "${distroversion}" == "9" ]; then
+					cmd="sudo apt-get install apt-transport-https dirmngr;sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF;echo 'deb https://download.mono-project.com/repo/debian stable-stretch main' | sudo tee /etc/apt/sources.list.d/mono-official-stable.list;sudo apt-get update"
+					eval "${cmd}"
+				elif [ "${distroversion}" == "8" ]; then
+					cmd="sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF;sudo apt-get install apt-transport-https;echo 'deb https://download.mono-project.com/repo/debian stable-jessie main' | sudo tee /etc/apt/sources.list.d/mono-official-stable.list;sudo apt-get update"
+					eval "${cmd}"
+				else
+					echo -e "Mono auto install not available for ${distroname}"
+					echo -e "	Follow instructions on mono site to install the latest version of Mono."
+					echo -e "	https://www.mono-project.com/download/stable/#download-lin"
+					monoautoinstall="1"
+				fi
+			elif [ "${distroid}" == "centos" ]; then
+				if [ "${distroversion}" == "8" ]; then
+					cmd="rpm --import 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF';su -c 'curl https://download.mono-project.com/repo/centos8-stable.repo | tee /etc/yum.repos.d/mono-centos8-stable.repo'"
+					eval "${cmd}"
+				elif [ "${distroversion}" == "7" ]; then
+					cmd="rpm --import 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF';su -c 'curl https://download.mono-project.com/repo/centos7-stable.repo | tee /etc/yum.repos.d/mono-centos7-stable.repo'"
+					eval "${cmd}"
+				else
+					echo -e "Mono auto install not available for ${distroname}"
+					echo -e "	Follow instructions on mono site to install the latest version of Mono."
+					echo -e "	https://www.mono-project.com/download/stable/#download-lin"
+					monoautoinstall="1"
+				fi
+			elif [ "${distroid}" == "fedora" ]; then
+				cmd="rpm --import 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF'; su -c 'curl https://download.mono-project.com/repo/centos7-stable.repo | tee /etc/yum.repos.d/mono-centos7-stable.repo'; dnf update"
+				eval "${cmd}"
+			else
+				echo -e "Mono auto install not available for ${distroname}"
+				echo -e "	Follow instructions on mono site to install the latest version of Mono."
+				echo -e "	https://www.mono-project.com/download/stable/#download-lin"
+				monoautoinstall="1"
+			fi
+		fi
+	fi
+}
+
 fn_install_mono_repo(){
 	if [ "${monostatus}" != "0" ]; then
 		fn_print_dots "Adding Mono repository"
@@ -446,6 +511,9 @@ fn_deps_build_debian(){
 	# Unreal Tournament
 	elif [ "${shortname}" == "ut" ]; then
 		array_deps_required+=( unzip )
+	# Venice Unleashed requires wine
+	elif [ "${shortname}" == "vu" ]; then
+		array_deps_required+=( wine )
 	# Wurm: Unlimited
 	elif [ "${shortname}" == "wurm" ]; then
 		array_deps_required+=( xvfb )
@@ -555,6 +623,9 @@ fn_deps_build_redhat(){
 	# Unreal Tournament
 	elif [ "${shortname}" == "ut" ]; then
 		array_deps_required+=( unzip )
+	# Venice Unleashed requires wine
+	elif [ "${shortname}" == "vu" ]; then
+		array_deps_required+=( wine )
 	# Wurm: Unlimited
 	elif [ "${shortname}" == "wurm" ]; then
 		array_deps_required+=( xorg-x11-server-Xvfb )

@@ -793,6 +793,13 @@ elif [ "${shortname}" == "vs" ]; then
 	fn_default_config_remote
 	fn_set_config_vars
 	fn_list_config_locations
+elif [ "${shortname}" == "vu" ]; then
+	gamedirname="VeniceUnleashed"
+	array_configs+=( Startup.txt )
+	fn_fetch_default_config
+	fn_default_config_remote
+	fn_set_config_vars
+	fn_list_config_locations
 elif [ "${shortname}" == "wet" ]; then
 	gamedirname="WolfensteinEnemyTerritory"
 	array_configs+=( server.cfg )
