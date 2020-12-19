@@ -46,7 +46,7 @@ userinput="${1}"
 ## GitHub Branch Select
 # Allows for the use of different function files
 # from a different repo and/or branch.
-githubuser="GameServerManagers"
+githubuser="danielchim"
 githubrepo="LinuxGSM"
 githubbranch="master"
 
@@ -169,7 +169,7 @@ fn_bootstrap_fetch_file_github(){
 		remote_fileurl_backup="https://bitbucket.org/${githubuser}/${githubrepo}/raw/${githubbranch}/${github_file_url_dir}/${github_file_url_name}"
 	fi
 	remote_fileurl_name="GitHub"
-	remote_fileurl_backup_name="Bitbucket"
+	remote_fileurl_backup_name="Nigga"
 	local_filedir="${3}"
 	local_filename="${github_file_url_name}"
 	chmodx="${4:-0}"
